@@ -1,0 +1,20 @@
+log:
+  level: 0
+
+server:
+  addr: "0.0.0.0:8090"
+  cert: ""
+  key: ""
+
+postgres:
+  driverName: "mysql"
+  dataSourceName: "_:_@tcp(10.0.0.211:3306)/ci?parseTime=true&charset=utf8mb4&collation=utf8mb4_unicode_ci"
+
+
+observability:
+  pprof:
+    enabled: true
+  prometheus:
+    enabled: true
+  jaeger:
+    enabled: true
