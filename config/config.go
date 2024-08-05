@@ -1,0 +1,109 @@
+package config
+
+import (
+	"bytes"
+	"ecom/pkg/constants"
+	"errors"
+	"os"
+	"strings"
+
+	"github.com/go-playground/validator/v10"
+	"github.com/spf13/viper"
+)
+
+type Log struct {
+	Level int
+}
+
+type Server struct {
+	Addr string
+	Cert string
+	Key  string
+}
+
+type Postgres struct {
+	DriverName     string
+	DataSourceName string
+}
+
+type Key struct {
+	ID   string
+	Cert string
+}
+
+type Observability struct {
+	PProf      PProf
+	Prometheus Prometheus
+	Jaeger     Jaeger
+}
+
+type PProf struct {
+	Enabled bool
+}
+
+type Prometheus struct {
+	Enabled bool
+}
+
+type Jaeger struct {
+	Enabled bool
+}
+
+type ConfStruct struct {
+	Log           Log           `validate:"required"`
+	Server        Server        `validate:"required"`
+	Postgres      Postgres      `validate:"required"`
+	Observability Observability `validate:"required"`
+}
+
+var Config ConfStruct
+
+func (c ConfStruct) Validate() error {
+	return validator.New().Struct(c)
+}
+
+func LoadConfig(file string) bool {
+	_, err := os.Stat(file)
+	if err != nil {
+		constants.Logger.Error().Err(err).Msgf("config file not found")
+		return false
+	}
+
+	viper.SetConfigFile(file)
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath(".")
+	viper.AddConfigPath("./config")
+	viper.SetEnvPrefix(constants.ServiceName)
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
+	viper.AutomaticEnv()
+
+	if err := viper.ReadConfig(bytes.NewReader([]byte(DefaultConfig))); err != nil {
+		constants.Logger.Error().Err(err).Msgf("error loading default configs")
+	}
+	return reload(file)
+}
+
+func reload(file string) bool {
+	err := viper.MergeInConfig()
+	if err != nil {
+		if errors.As(err, &viper.ConfigFileNotFoundError{}) {
+			constants.Logger.Error().Err(err).Msgf("config file not found %s", file)
+		} else {
+			constants.Logger.Error().Err(err).Msgf("config file read failed %s", file)
+		}
+		return false
+	}
+
+	err = viper.GetViper().UnmarshalExact(&Config)
+	if err != nil {
+		constants.Logger.Error().Err(err).Msgf("faild to unmarshal the conf %s", file)
+		return false
+	}
+
+	if err = Config.Validate(); err != nil {
+		constants.Logger.Error().Err(err).Msgf("invalid configuration %s", file)
+	}
+
+	constants.Logger.Info().Msgf("config file loaded %s", file)
+	return true
+}
