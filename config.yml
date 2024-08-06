@@ -6,9 +6,9 @@ server:
   cert: ""
   key: ""
 
-postgres:
-  driverName: "mysql"
-  dataSourceName: "_:_@tcp(10.0.0.211:3306)/ci?parseTime=true&charset=utf8mb4&collation=utf8mb4_unicode_ci"
+db:
+  driverName: "sqlite"
+  dataSourceName: "db.sqlite"
 
 
 observability:

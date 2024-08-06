@@ -42,7 +42,7 @@ func main() {
 	}
 	zerolog.SetGlobalLevel(zerolog.Level(verbosityLevel))
 
-	//api.InitMySqlCon(config.Config.MySql)
+	api.InitSqlDb(config.Config)
 	//service.MakeSqlSchema(api.MySqlClient)
 	//service.ApplyMigrations(api.MongoClient, api.MySqlClient)
 

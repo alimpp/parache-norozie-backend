@@ -1,7 +1,6 @@
 package config
 
 import (
-	"bytes"
 	"ecom/pkg/constants"
 	"errors"
 	"os"
@@ -21,7 +20,7 @@ type Server struct {
 	Key  string
 }
 
-type Postgres struct {
+type DB struct {
 	DriverName     string
 	DataSourceName string
 }
@@ -52,7 +51,7 @@ type Jaeger struct {
 type ConfStruct struct {
 	Log           Log           `validate:"required"`
 	Server        Server        `validate:"required"`
-	Postgres      Postgres      `validate:"required"`
+	DB            DB            `validate:"required"`
 	Observability Observability `validate:"required"`
 }
 
@@ -77,9 +76,6 @@ func LoadConfig(file string) bool {
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
 	viper.AutomaticEnv()
 
-	if err := viper.ReadConfig(bytes.NewReader([]byte(DefaultConfig))); err != nil {
-		constants.Logger.Error().Err(err).Msgf("error loading default configs")
-	}
 	return reload(file)
 }
 
