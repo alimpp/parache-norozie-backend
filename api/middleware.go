@@ -20,7 +20,7 @@ func rateLimiterMiddleware() fiber.Handler {
 
 func logMiddleware() fiber.Handler {
 	return logger.New(logger.Config{
-		Format:     "{\"level\":\"info\",\"service\":\"Customer-Info\",\"error\":\"${status}\",\"time\":\"${time}\",\"message\":\"${locals:requestid} ${latency} ${method} ${path}\"}\n",
+		Format:     "{\"level\":\"info\",\"service\":\"parche-norozie-backend\",\"error\":\"${status}\",\"time\":\"${time}\",\"message\":\"${locals:requestid} ${latency} ${method} ${path}\"}\n",
 		TimeFormat: "2006-01-02T15:04:05-0700",
 	})
 }
