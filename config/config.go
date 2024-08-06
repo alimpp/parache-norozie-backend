@@ -10,6 +10,10 @@ import (
 	"github.com/spf13/viper"
 )
 
+type Mode struct {
+	Debug bool
+}
+
 type Log struct {
 	Level int
 }
@@ -28,6 +32,12 @@ type DB struct {
 type Key struct {
 	ID   string
 	Cert string
+}
+
+type SMS struct {
+	Url        string
+	ApiKey     string
+	TemplateId int
 }
 
 type Observability struct {
@@ -49,9 +59,11 @@ type Jaeger struct {
 }
 
 type ConfStruct struct {
+	Mode          Mode          `validate:"required"`
 	Log           Log           `validate:"required"`
 	Server        Server        `validate:"required"`
 	DB            DB            `validate:"required"`
+	SMS           SMS           `validate:"required"`
 	Observability Observability `validate:"required"`
 }
 

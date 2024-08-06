@@ -1,3 +1,6 @@
+mode:
+  debug: true
+
 log:
   level: 0
 
@@ -10,6 +13,10 @@ db:
   driverName: "sqlite"
   dataSourceName: "db.sqlite"
 
+sms:
+  url: ""
+  apiKey: ""
+  templateId: ""
 
 observability:
   pprof:
