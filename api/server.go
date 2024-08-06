@@ -17,10 +17,19 @@ type AppServer struct {
 	sqlDb *gorm.DB
 }
 
+var AppSrv *AppServer
+
 var store = session.New()
 
 func NewAppServer(cfg *config.ConfStruct) *AppServer {
 	appSrv := &AppServer{cfg: cfg}
+
+	if cfg.SMS.Url == "" {
+		appSrv.sms = services.MockSMS{}
+	}
+
+	appSrv.sqlDb = InitSqlDb(config.Config)
+	services.ApplyMigrations(appSrv.sqlDb)
 
 	app := fiber.New()
 
@@ -45,6 +54,7 @@ func NewAppServer(cfg *config.ConfStruct) *AppServer {
 	v1.Post("/password", password)
 
 	appSrv.app = app
+	AppSrv = appSrv
 	return appSrv
 }
 

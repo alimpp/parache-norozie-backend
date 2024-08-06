@@ -4,7 +4,6 @@ import (
 	"ecom/api"
 	"ecom/config"
 	"ecom/pkg/constants"
-	"ecom/pkg/services"
 	"flag"
 	"fmt"
 	"github.com/rs/zerolog"
@@ -38,9 +37,6 @@ func main() {
 		verbosityLevel = config.Config.Log.Level
 	}
 	zerolog.SetGlobalLevel(zerolog.Level(verbosityLevel))
-
-	api.InitSqlDb(config.Config)
-	services.ApplyMigrations(api.SqlDb)
 
 	serv := api.NewAppServer(&config.Config)
 
