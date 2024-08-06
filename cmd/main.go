@@ -30,7 +30,7 @@ func main() {
 	}
 
 	if config.Config.Mode.Debug {
-		fmt.Printf("\033[1;33m%s\033[0m", "Running in debug mode\n")
+		fmt.Printf("\033[1;33m%s\033[0m", "----------------------------RUNNING IN DEBUG MODE----------------------------\n")
 	}
 
 	if verbosityLevel < 0 {
