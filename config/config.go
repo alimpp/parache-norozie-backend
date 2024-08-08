@@ -40,6 +40,10 @@ type SMS struct {
 	TemplateId int
 }
 
+type Swagger struct {
+	Password string
+}
+
 type Observability struct {
 	PProf      PProf
 	Prometheus Prometheus
@@ -64,6 +68,7 @@ type ConfStruct struct {
 	Server        Server        `validate:"required"`
 	DB            DB            `validate:"required"`
 	SMS           SMS           `validate:"required"`
+	Swagger       Swagger       `validate:"required"`
 	Observability Observability `validate:"required"`
 }
 

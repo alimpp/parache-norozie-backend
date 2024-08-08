@@ -5,8 +5,10 @@ import (
 	"ecom/config"
 	"ecom/pkg/constants"
 	"ecom/pkg/services"
+	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
+	"github.com/gofiber/swagger"
 	"gorm.io/gorm"
 )
 
@@ -48,6 +50,8 @@ func NewAppServer(cfg *config.ConfStruct) *AppServer {
 	api := app.Group("/api")
 	v1 := api.Group("/v1")
 	v1.Get("/health", healthCheck)
+
+	v1.Get(fmt.Sprintf("/swagger/%s/*", cfg.Swagger.Password), swagger.HandlerDefault)
 
 	v1.Get("/login", login)
 	v1.Post("/otp", otp)

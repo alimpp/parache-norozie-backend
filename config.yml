@@ -18,6 +18,9 @@ sms:
   apiKey: ""
   templateId: ""
 
+swagger:
+  password: "cgGj79lDQyrkRNsmVLQAd3YGk431e0hn"
+
 observability:
   pprof:
     enabled: true

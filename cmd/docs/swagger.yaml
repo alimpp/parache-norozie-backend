@@ -1,0 +1,58 @@
+definitions:
+  api.ReqLogin:
+    properties:
+      back_url:
+        type: string
+      phone:
+        type: string
+    required:
+    - phone
+    type: object
+  api.Resp:
+    properties:
+      data: {}
+      status:
+        type: integer
+    type: object
+  util.ErrorResp:
+    properties:
+      errMsg:
+        type: string
+      status:
+        type: integer
+    type: object
+info:
+  contact: {}
+  title: Swagger Doc
+  version: "1.0"
+paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Login credentials
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/api.ReqLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful login
+          schema:
+            $ref: '#/definitions/api.Resp'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/util.ErrorResp'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/util.ErrorResp'
+      summary: User login
+      tags:
+      - authentication
+swagger: "2.0"

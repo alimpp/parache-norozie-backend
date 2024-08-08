@@ -12,7 +12,7 @@ type ReqLogin struct {
 
 func (r ReqLogin) Validate() error {
 	if err := validator.New().Struct(r); err != nil {
-		return constants.ErrRequestBody{Msg: err.Error()}
+		return constants.ErrRequestBody{Msg: "invalid json request body"}
 	}
 	return nil
 }

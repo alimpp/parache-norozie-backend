@@ -10,6 +10,8 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+
+	_ "ecom/cmd/docs"
 )
 
 var (
@@ -22,6 +24,8 @@ func init() {
 	flag.Parse()
 }
 
+// @title           Swagger Doc
+// @version         1.0
 func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 
