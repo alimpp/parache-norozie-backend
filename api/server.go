@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"crypto/tls"
 	"ecom/config"
 	"ecom/pkg/constants"
@@ -9,6 +10,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
 	"github.com/gofiber/swagger"
+	"github.com/redis/go-redis/v9"
+	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
@@ -17,6 +21,7 @@ type AppServer struct {
 	cfg   *config.ConfStruct
 	sms   services.SMS
 	sqlDb *gorm.DB
+	redis *redis.Client
 }
 
 var AppSrv *AppServer
@@ -32,6 +37,19 @@ func NewAppServer(cfg *config.ConfStruct) *AppServer {
 
 	appSrv.sqlDb = InitSqlDb(config.Config)
 	services.ApplyMigrations(appSrv.sqlDb)
+
+	opts, err := redis.ParseURL(cfg.Redis.Url)
+	if err != nil {
+		panic(err)
+	}
+
+	rdb := redis.NewClient(opts)
+
+	if _, err := rdb.Ping(context.Background()).Result(); err != nil {
+		panic(err)
+	}
+
+	appSrv.redis = rdb
 
 	app := fiber.New()
 
@@ -84,4 +102,22 @@ func (s *AppServer) ListenAndServe() chan error {
 		}
 	}()
 	return errCh
+}
+
+func InitSqlDb(conf config.ConfStruct) *gorm.DB {
+	if conf.DB.DriverName == "sqlite" {
+		db, err := gorm.Open(sqlite.Open(conf.DB.DataSourceName), &gorm.Config{})
+		if err != nil {
+			panic("failed to connect database")
+		}
+		return db
+	} else if conf.DB.DriverName == "postgres" {
+		db, err := gorm.Open(postgres.Open(conf.DB.DataSourceName), &gorm.Config{})
+		if err != nil {
+			panic("failed to connect database")
+		}
+		return db
+	} else {
+		panic("unsupported database driver")
+	}
 }

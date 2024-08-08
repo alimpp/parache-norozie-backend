@@ -44,6 +44,10 @@ type OTP struct {
 	TTE int
 }
 
+type Redis struct {
+	Url string
+}
+
 type Swagger struct {
 	Password string
 }
@@ -73,6 +77,7 @@ type ConfStruct struct {
 	DB            DB            `validate:"required"`
 	SMS           SMS           `validate:"required"`
 	OTP           OTP           `validate:"required"`
+	Redis         Redis         `validate:"required"`
 	Swagger       Swagger       `validate:"required"`
 	Observability Observability `validate:"required"`
 }

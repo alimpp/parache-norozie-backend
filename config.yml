@@ -21,6 +21,9 @@ sms:
 otp:
   tte: 120
 
+redis:
+  url: "redis://localhost:6379/0"
+
 swagger:
   password: "cgGj79lDQyrkRNsmVLQAd3YGk431e0hn"
 
