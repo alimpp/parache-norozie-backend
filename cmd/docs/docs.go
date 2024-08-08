@@ -26,7 +26,7 @@ const docTemplate = `{
                 "tags": [
                     "authentication"
                 ],
-                "summary": "User login",
+                "summary": "User otp login",
                 "parameters": [
                     {
                         "description": "Login credentials",
@@ -40,21 +40,9 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successful login",
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/api.Resp"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid input",
-                        "schema": {
-                            "$ref": "#/definitions/util.ErrorResp"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/util.ErrorResp"
                         }
                     }
                 }
@@ -80,15 +68,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "data": {},
-                "status": {
-                    "type": "integer"
-                }
-            }
-        },
-        "util.ErrorResp": {
-            "type": "object",
-            "properties": {
-                "errMsg": {
+                "message": {
                     "type": "string"
                 },
                 "status": {

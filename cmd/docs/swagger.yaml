@@ -11,12 +11,7 @@ definitions:
   api.Resp:
     properties:
       data: {}
-      status:
-        type: integer
-    type: object
-  util.ErrorResp:
-    properties:
-      errMsg:
+      message:
         type: string
       status:
         type: integer
@@ -41,18 +36,10 @@ paths:
       - application/json
       responses:
         "200":
-          description: Successful login
+          description: OK
           schema:
             $ref: '#/definitions/api.Resp'
-        "400":
-          description: Invalid input
-          schema:
-            $ref: '#/definitions/util.ErrorResp'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/util.ErrorResp'
-      summary: User login
+      summary: User otp login
       tags:
       - authentication
 swagger: "2.0"

@@ -24,6 +24,11 @@ type ReqPassword struct {
 }
 
 type Resp struct {
-	Data   interface{} `json:"data"`
-	Status int         `json:"status"`
+	Data    interface{} `json:"data,omitempty"`
+	Message string      `json:"message,omitempty"`
+	Status  int         `json:"status"`
+}
+
+func (r Resp) Error() string {
+	return r.Message
 }

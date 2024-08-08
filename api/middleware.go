@@ -2,6 +2,7 @@ package api
 
 import (
 	"ecom/pkg/constants"
+	"errors"
 	"github.com/ansrivas/fiberprometheus/v2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
@@ -42,4 +43,25 @@ func PrometheusMiddleware(app *fiber.App) fiber.Handler {
 func CacheHeaderMiddleware(c *fiber.Ctx) error {
 	c.Set("Cache-Control", "public, max-age=21600")
 	return c.Next()
+}
+
+func ErrorResponse(ctx *fiber.Ctx, err error) error {
+	constants.Logger.Err(err).Msgf(err.Error())
+
+	errorResp := Resp{Message: err.Error()}
+
+	switch {
+	case errors.Is(err, fiber.ErrUnprocessableEntity):
+		errorResp.Message = "invalid body request"
+		errorResp.Status = fiber.StatusUnprocessableEntity
+
+	case errors.Is(err, constants.ErrRequestBody{}):
+		errorResp.Message = "invalid body request"
+		errorResp.Status = fiber.StatusBadRequest
+	default:
+		errorResp.Message = "unknown error"
+		errorResp.Status = fiber.StatusInternalServerError
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(errorResp)
 }
