@@ -40,6 +40,10 @@ type SMS struct {
 	TemplateId int
 }
 
+type OTP struct {
+	TTE int
+}
+
 type Swagger struct {
 	Password string
 }
@@ -68,6 +72,7 @@ type ConfStruct struct {
 	Server        Server        `validate:"required"`
 	DB            DB            `validate:"required"`
 	SMS           SMS           `validate:"required"`
+	OTP           OTP           `validate:"required"`
 	Swagger       Swagger       `validate:"required"`
 	Observability Observability `validate:"required"`
 }

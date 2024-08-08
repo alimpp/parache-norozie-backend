@@ -18,6 +18,9 @@ sms:
   apiKey: ""
   templateId: ""
 
+otp:
+  tte: 120
+
 swagger:
   password: "cgGj79lDQyrkRNsmVLQAd3YGk431e0hn"
 

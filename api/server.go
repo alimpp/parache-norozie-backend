@@ -54,7 +54,7 @@ func NewAppServer(cfg *config.ConfStruct) *AppServer {
 	v1.Get(fmt.Sprintf("/swagger/%s/*", cfg.Swagger.Password), swagger.HandlerDefault)
 
 	v1.Get("/login", login)
-	v1.Post("/otp", otp)
+	v1.Post("/otp", verifyOtp)
 	v1.Post("/password", password)
 
 	appSrv.app = app

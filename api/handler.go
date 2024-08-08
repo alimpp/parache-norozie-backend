@@ -14,11 +14,11 @@ func healthCheck(c *fiber.Ctx) error {
 // @Tags         authentication
 // @Accept       json
 // @Produce      json
-// @Param        login body ReqLogin true "Login credentials"
+// @Param        login body LoginRes true "Login credentials"
 // @Success      200 {object} Resp
 // @Router       /login [post]
 func login(ctx *fiber.Ctx) error {
-	req := ReqLogin{}
+	req := LoginReq{}
 	if err := ctx.BodyParser(&req); err != nil {
 		return ErrorResponse(ctx, err)
 	}
@@ -33,10 +33,11 @@ func login(ctx *fiber.Ctx) error {
 		return ErrorResponse(ctx, err)
 	}
 
-	return nil
+	resp := LoginResp{UserExists: true, TTE: AppSrv.cfg.OTP.TTE}
+	return ctx.Status(fiber.StatusOK).JSON(resp)
 }
 
-func otp(ctx *fiber.Ctx) error {
+func verifyOtp(ctx *fiber.Ctx) error {
 	return nil
 }
 
