@@ -6,6 +6,14 @@ type ErrRequestBody struct {
 	Msg string
 }
 
-func (receiver ErrRequestBody) Error() string {
-	return receiver.Msg
+func (e ErrRequestBody) Error() string {
+	return e.Msg
+}
+
+type ErrRecordNotFound struct {
+	Msg string
+}
+
+func (e ErrRecordNotFound) Error() string {
+	return e.Msg
 }

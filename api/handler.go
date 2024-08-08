@@ -2,8 +2,11 @@ package api
 
 import (
 	_ "ecom/cmd/docs"
+	"ecom/pkg/services"
 	"ecom/pkg/util"
+	"errors"
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
 func healthCheck(c *fiber.Ctx) error {
@@ -33,7 +36,16 @@ func login(ctx *fiber.Ctx) error {
 		return ErrorResponse(ctx, err)
 	}
 
-	resp := LoginResp{UserExists: true, TTE: AppSrv.cfg.OTP.TTE}
+	resp := LoginResp{TTE: AppSrv.cfg.OTP.TTE}
+
+	if err := AppSrv.sqlDb.Where(services.User{Phone: req.Phone}).First(&services.User{}).Error; err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return ErrorResponse(ctx, err)
+		}
+	} else {
+		resp.UserExists = true
+	}
+
 	return ctx.Status(fiber.StatusOK).JSON(resp)
 }
 
