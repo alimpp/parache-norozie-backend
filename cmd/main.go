@@ -27,6 +27,7 @@ func init() {
 
 // @title           Swagger Doc
 // @version         1.0
+// @BasePath /api/v1
 func main() {
 	if !config.LoadConfig(configPath) {
 		os.Exit(-1)

@@ -60,6 +60,28 @@ const docTemplate = `{
                 }
             }
         },
+        "/logout": {
+            "post": {
+                "consumes": [
+                    "text/plain"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "authentication"
+                ],
+                "summary": "Used to log out",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Resp"
+                        }
+                    }
+                }
+            }
+        },
         "/otp": {
             "post": {
                 "consumes": [
@@ -171,7 +193,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "",
-	BasePath:         "",
+	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "Swagger Doc",
 	Description:      "",

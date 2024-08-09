@@ -119,6 +119,21 @@ func verifyOtp(ctx *fiber.Ctx) error {
 	}
 	resp := Resp{Data: OtpVerifyResp{LoginSuccessful: true}, Status: 200}
 	return ctx.Status(fiber.StatusOK).JSON(resp)
+}
+
+// @Summary      Used to log out
+// @Tags         authentication
+// @Accept       plain
+// @Produce      json
+// @Success      200 {object} Resp
+// @Router       /logout [post]
+func logout(ctx *fiber.Ctx) error {
+	sess, err := AppSrv.sessionStore.Get(ctx)
+	if err != nil && sess != nil {
+		AppSrv.sessionStore.Delete(sess.ID())
+	}
+	resp := Resp{Message: "از سرویس خارج شدید", Status: 200}
+	return ctx.Status(fiber.StatusOK).JSON(resp)
 
 }
 

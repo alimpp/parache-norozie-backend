@@ -1,3 +1,4 @@
+basePath: /api/v1
 definitions:
   api.LoginReq:
     properties:
@@ -65,6 +66,20 @@ paths:
                   $ref: '#/definitions/api.LoginResp'
               type: object
       summary: User otp login
+      tags:
+      - authentication
+  /logout:
+    post:
+      consumes:
+      - text/plain
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Resp'
+      summary: Used to log out
       tags:
       - authentication
   /otp:

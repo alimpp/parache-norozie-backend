@@ -5,6 +5,7 @@
         "contact": {},
         "version": "1.0"
     },
+    "basePath": "/api/v1",
     "paths": {
         "/login": {
             "post": {
@@ -46,6 +47,28 @@
                                     }
                                 }
                             ]
+                        }
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "post": {
+                "consumes": [
+                    "text/plain"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "authentication"
+                ],
+                "summary": "Used to log out",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Resp"
                         }
                     }
                 }

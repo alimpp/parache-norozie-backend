@@ -81,11 +81,15 @@ func NewAppServer(cfg *config.ConfStruct, ctx context.Context) *AppServer {
 
 	v1.Post("/login", login)
 	v1.Post("/otp", verifyOtp)
+	v1.Get("/logout", logout)
 	v1.Post("/password", password)
+	//
+	//profile := v1.Group("/profile")
+	//profile.Get("/")
+	//profile.Post("/update")
 
 	app.Get("/*", func(c *fiber.Ctx) error {
-		targetURL := cfg.NodeJs.Url
-		return proxy.Do(c, targetURL)
+		return proxy.Do(c, cfg.NodeJs.Url)
 	})
 
 	appSrv.app = app
