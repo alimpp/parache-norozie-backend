@@ -52,6 +52,10 @@ type Swagger struct {
 	Password string
 }
 
+type NodeJs struct {
+	Url string
+}
+
 type Observability struct {
 	PProf      PProf
 	Prometheus Prometheus
@@ -79,6 +83,7 @@ type ConfStruct struct {
 	OTP           OTP           `validate:"required"`
 	Redis         Redis         `validate:"required"`
 	Swagger       Swagger       `validate:"required"`
+	NodeJs        NodeJs        `validate:"required"`
 	Observability Observability `validate:"required"`
 }
 

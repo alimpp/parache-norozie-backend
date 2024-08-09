@@ -27,6 +27,9 @@ redis:
 swagger:
   password: "cgGj79lDQyrkRNsmVLQAd3YGk431e0hn"
 
+nodeJs:
+  url: ""
+
 observability:
   pprof:
     enabled: true

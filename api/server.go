@@ -9,6 +9,7 @@ import (
 	"ecom/pkg/util"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/proxy"
 	"github.com/gofiber/fiber/v2/middleware/session"
 	"github.com/gofiber/swagger"
 	"github.com/redis/go-redis/v9"
@@ -81,6 +82,11 @@ func NewAppServer(cfg *config.ConfStruct, ctx context.Context) *AppServer {
 	v1.Post("/login", login)
 	v1.Post("/otp", verifyOtp)
 	v1.Post("/password", password)
+
+	app.Get("/*", func(c *fiber.Ctx) error {
+		targetURL := cfg.NodeJs.Url
+		return proxy.Do(c, targetURL)
+	})
 
 	appSrv.app = app
 	AppSrv = appSrv
