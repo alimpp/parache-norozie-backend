@@ -5,9 +5,18 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+type Resp struct {
+	Data    interface{} `json:"data,omitempty"`
+	Message string      `json:"message,omitempty"`
+	Status  int         `json:"status"`
+}
+
+func (r Resp) Error() string {
+	return r.Message
+}
+
 type LoginReq struct {
-	Phone   string `json:"phone" validate:"required"`
-	BackUrl string `json:"back_url"`
+	Phone string `json:"phone" validate:"required"`
 }
 
 func (r LoginReq) Validate() error {
@@ -22,18 +31,23 @@ type LoginResp struct {
 	TTE        int  `json:"tte"`
 }
 
-type ReqPassword struct {
+//type ReqPassword struct {
+//	Phone    string `json:"phone" validate:"required"`
+//	Password string `json:"password" validate:"required"`
+//}
+
+type OtpVerifyReq struct {
 	Phone    string `json:"phone" validate:"required"`
-	BackUrl  string `json:"back_url"`
-	Password string `json:"password" validate:"required"`
+	OtpToken string `json:"otp_token" validate:"required"`
 }
 
-type Resp struct {
-	Data    interface{} `json:"data,omitempty"`
-	Message string      `json:"message,omitempty"`
-	Status  int         `json:"status"`
+func (r OtpVerifyReq) Validate() error {
+	if err := validator.New().Struct(r); err != nil {
+		return constants.ErrRequestBody{Msg: "invalid json request body"}
+	}
+	return nil
 }
 
-func (r Resp) Error() string {
-	return r.Message
+type OtpVerifyResp struct {
+	LoginSuccessful bool `json:"login_successful"`
 }

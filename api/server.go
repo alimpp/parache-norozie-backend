@@ -6,6 +6,7 @@ import (
 	"ecom/config"
 	"ecom/pkg/constants"
 	"ecom/pkg/services"
+	"ecom/pkg/util"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -17,19 +18,21 @@ import (
 )
 
 type AppServer struct {
-	app   *fiber.App
-	cfg   *config.ConfStruct
-	sms   services.SMS
-	sqlDb *gorm.DB
-	redis *redis.Client
+	debugMode    bool
+	app          *fiber.App
+	cfg          *config.ConfStruct
+	sms          services.SMS
+	sqlDb        *gorm.DB
+	redis        *redis.Client
+	sessionStore *session.Store
 }
 
 var AppSrv *AppServer
 
-var store = session.New()
-
-func NewAppServer(cfg *config.ConfStruct) *AppServer {
+func NewAppServer(cfg *config.ConfStruct, ctx context.Context) *AppServer {
 	appSrv := &AppServer{cfg: cfg}
+
+	appSrv.debugMode = cfg.Mode.Debug
 
 	if cfg.SMS.Url == "" {
 		appSrv.sms = services.MockSMS{}
@@ -45,11 +48,15 @@ func NewAppServer(cfg *config.ConfStruct) *AppServer {
 
 	rdb := redis.NewClient(opts)
 
-	if _, err := rdb.Ping(context.Background()).Result(); err != nil {
+	if _, err := rdb.Ping(ctx).Result(); err != nil {
 		panic(err)
 	}
 
 	appSrv.redis = rdb
+
+	appSrv.sessionStore = session.New(session.Config{
+		Storage: &util.RedisStore{Client: rdb, Ctx: ctx},
+	})
 
 	app := fiber.New()
 
@@ -71,7 +78,7 @@ func NewAppServer(cfg *config.ConfStruct) *AppServer {
 
 	v1.Get(fmt.Sprintf("/swagger/%s/*", cfg.Swagger.Password), swagger.HandlerDefault)
 
-	v1.Get("/login", login)
+	v1.Post("/login", login)
 	v1.Post("/otp", verifyOtp)
 	v1.Post("/password", password)
 
@@ -106,13 +113,13 @@ func (s *AppServer) ListenAndServe() chan error {
 
 func InitSqlDb(conf config.ConfStruct) *gorm.DB {
 	if conf.DB.DriverName == "sqlite" {
-		db, err := gorm.Open(sqlite.Open(conf.DB.DataSourceName), &gorm.Config{})
+		db, err := gorm.Open(sqlite.Open(conf.DB.Url), &gorm.Config{})
 		if err != nil {
 			panic("failed to connect database")
 		}
 		return db
 	} else if conf.DB.DriverName == "postgres" {
-		db, err := gorm.Open(postgres.Open(conf.DB.DataSourceName), &gorm.Config{})
+		db, err := gorm.Open(postgres.Open(conf.DB.Url), &gorm.Config{})
 		if err != nil {
 			panic("failed to connect database")
 		}

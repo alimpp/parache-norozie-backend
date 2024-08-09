@@ -25,8 +25,8 @@ type Server struct {
 }
 
 type DB struct {
-	DriverName     string
-	DataSourceName string
+	DriverName string
+	Url        string
 }
 
 type Key struct {
@@ -92,7 +92,6 @@ func LoadConfig(file string) bool {
 	_, err := os.Stat(file)
 	if err != nil {
 		constants.Logger.Error().Err(err).Msgf("config file not found")
-		return false
 	}
 
 	viper.SetConfigFile(file)

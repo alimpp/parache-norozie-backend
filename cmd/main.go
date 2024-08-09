@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"ecom/api"
 	"ecom/config"
 	"ecom/pkg/constants"
@@ -11,7 +12,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	_ "ecom/cmd/docs"
+	_ "ecom/docs"
 )
 
 var (
@@ -27,8 +28,6 @@ func init() {
 // @title           Swagger Doc
 // @version         1.0
 func main() {
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
-
 	if !config.LoadConfig(configPath) {
 		os.Exit(-1)
 	}
@@ -42,7 +41,9 @@ func main() {
 	}
 	zerolog.SetGlobalLevel(zerolog.Level(verbosityLevel))
 
-	serv := api.NewAppServer(&config.Config)
+	ctx, cancel := context.WithCancel(context.Background())
+
+	serv := api.NewAppServer(&config.Config, ctx)
 
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh,
@@ -53,9 +54,11 @@ func main() {
 	)
 	select {
 	case err := <-serv.ListenAndServe():
+		cancel()
 		panic(err)
 	case <-sigCh:
 		constants.Logger.Info().Msg("Shutting down service...")
+		cancel()
 		os.Exit(1)
 	}
 }

@@ -2,6 +2,7 @@ package api
 
 import (
 	"ecom/pkg/constants"
+	"encoding/json"
 	"errors"
 	"github.com/ansrivas/fiberprometheus/v2"
 	"github.com/gofiber/fiber/v2"
@@ -21,7 +22,7 @@ func rateLimiterMiddleware() fiber.Handler {
 
 func logMiddleware() fiber.Handler {
 	return logger.New(logger.Config{
-		Format:     "{\"level\":\"info\",\"service\":\"parche-norozie-backend\",\"error\":\"${status}\",\"time\":\"${time}\",\"message\":\"${locals:requestid} ${latency} ${method} ${path}\"}\n",
+		Format:     "{\"level\":\"info\",\"service\":\"parche-go\",\"error\":\"${status}\",\"time\":\"${time}\",\"message\":\"${locals:requestid} ${latency} ${method} ${path}\"}\n",
 		TimeFormat: "2006-01-02T15:04:05-0700",
 	})
 }
@@ -48,15 +49,29 @@ func CacheHeaderMiddleware(c *fiber.Ctx) error {
 func ErrorResponse(ctx *fiber.Ctx, err error) error {
 	constants.Logger.Err(err).Msgf(err.Error())
 
-	errorResp := Resp{Message: err.Error()}
+	errorResp := Resp{}
+
+	var unmarshalTypeError *json.UnmarshalTypeError
+	var errRequestBody constants.ErrRequestBody
+	var errDuplicateOtp constants.ErrDuplicateOtp
+	var errBadRequest constants.ErrBadRequest
+	var errRecordNotFound constants.ErrRecordNotFound
 
 	switch {
-	case errors.Is(err, fiber.ErrUnprocessableEntity):
+	case errors.As(err, &unmarshalTypeError):
 		errorResp.Message = "invalid body request"
-		errorResp.Status = fiber.StatusUnprocessableEntity
-
-	case errors.Is(err, constants.ErrRequestBody{}):
+		errorResp.Status = fiber.StatusBadRequest
+	case errors.As(err, &errRequestBody):
 		errorResp.Message = "invalid body request"
+		errorResp.Status = fiber.StatusBadRequest
+	case errors.As(err, &errDuplicateOtp):
+		errorResp.Message = err.Error()
+		errorResp.Status = fiber.StatusBadRequest
+	case errors.As(err, &errBadRequest):
+		errorResp.Message = err.Error()
+		errorResp.Status = fiber.StatusBadRequest
+	case errors.As(err, &errRecordNotFound):
+		errorResp.Message = err.Error()
 		errorResp.Status = fiber.StatusBadRequest
 	default:
 		errorResp.Message = "unknown error"

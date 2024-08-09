@@ -1,6 +1,6 @@
 package constants
 
-const ServiceName = "parche-norozie-backend"
+const ServiceName = "parche_go"
 
 type ErrRequestBody struct {
 	Msg string
@@ -15,5 +15,21 @@ type ErrRecordNotFound struct {
 }
 
 func (e ErrRecordNotFound) Error() string {
+	return e.Msg
+}
+
+type ErrDuplicateOtp struct {
+	Msg string
+}
+
+func (e ErrDuplicateOtp) Error() string {
+	return e.Msg
+}
+
+type ErrBadRequest struct {
+	Msg string
+}
+
+func (e ErrBadRequest) Error() string {
 	return e.Msg
 }

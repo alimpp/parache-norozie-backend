@@ -2,7 +2,7 @@ mode:
   debug: true
 
 log:
-  level: 0
+  level: 18
 
 server:
   addr: "0.0.0.0:8090"
@@ -11,7 +11,7 @@ server:
 
 db:
   driverName: "sqlite"
-  dataSourceName: "db.sqlite"
+  url: "db.sqlite"
 
 sms:
   url: ""
