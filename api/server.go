@@ -83,7 +83,7 @@ func NewAppServer(cfg *config.ConfStruct, ctx context.Context) *AppServer {
 	v1.Post("/otp", verifyOtp)
 	v1.Get("/logout", logout)
 	v1.Post("/password", password)
-	//
+
 	//profile := v1.Group("/profile")
 	//profile.Get("/")
 	//profile.Post("/update")

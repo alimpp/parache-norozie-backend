@@ -130,11 +130,11 @@ func verifyOtp(ctx *fiber.Ctx) error {
 func logout(ctx *fiber.Ctx) error {
 	sess, err := AppSrv.sessionStore.Get(ctx)
 	if err != nil && sess != nil {
-		AppSrv.sessionStore.Delete(sess.ID())
+		sess.Destroy()
+		ctx.ClearCookie("session_key")
 	}
 	resp := Resp{Message: "از سرویس خارج شدید", Status: 200}
 	return ctx.Status(fiber.StatusOK).JSON(resp)
-
 }
 
 func password(ctx *fiber.Ctx) error {
