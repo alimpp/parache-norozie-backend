@@ -1,0 +1,96 @@
+definitions:
+  api.LoginReq:
+    properties:
+      phone:
+        type: string
+    required:
+    - phone
+    type: object
+  api.LoginResp:
+    properties:
+      tte:
+        type: integer
+      user_exists:
+        type: boolean
+    type: object
+  api.OtpVerifyReq:
+    properties:
+      otp_token:
+        type: string
+      phone:
+        type: string
+    required:
+    - otp_token
+    - phone
+    type: object
+  api.OtpVerifyResp:
+    properties:
+      login_successful:
+        type: boolean
+    type: object
+  api.Resp:
+    properties:
+      data: {}
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+info:
+  contact: {}
+  title: Swagger Doc
+  version: "1.0"
+paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Login credentials
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/api.LoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/api.LoginResp'
+              type: object
+      summary: User otp login
+      tags:
+      - authentication
+  /otp:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: otp token
+        in: body
+        name: OtpVerifyReq
+        required: true
+        schema:
+          $ref: '#/definitions/api.OtpVerifyReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/api.OtpVerifyResp'
+              type: object
+      summary: Used to verify otp
+      tags:
+      - authentication
+swagger: "2.0"
